@@ -1,12 +1,32 @@
 const app = require('express')();
 const server = require('http').createServer(app);
+var cookieParser = require('cookie-parser');
+const rateLimit = require("express-rate-limit");
+const swaggerUi = require('swagger-ui-express');
+const openApiDocumentation = require('./swaggerdocs');
 
 const bodyParser = require('body-parser')
 
+app.use(bodyParser.urlencoded({ extended: false }))
+
+app.use(bodyParser.json())
+
 const cors = require('cors');
 app.use(cors({
-    origin: '*'
+    origin: 'http://localhost:3000', 
+    credentials: true
 }));
+
+app.use(cookieParser());
+
+app.use(
+    rateLimit({
+      windowMs: 60 * 60 * 1000,
+      max: 100,
+      message: "You exceeded request limit",
+      headers: true,
+    })
+);
 
 const io = require('socket.io')(server , {
     cors: {
@@ -15,12 +35,15 @@ const io = require('socket.io')(server , {
     }
 });
 
-const Router = require("./routes/personRoutes");
+const PersonRouter = require("./routes/personRoutes");
+app.use(PersonRouter);
 
-app.use(bodyParser.urlencoded({ extended: false }))
+const LogsRouter = require("./routes/logsRoutes");
+app.use(LogsRouter);
 
-app.use(bodyParser.json())
-app.use(Router);
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(openApiDocumentation));
+
+
 
 /*   Socket.io connection   */
 io.on('connection', socket => {

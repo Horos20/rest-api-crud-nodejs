@@ -1,0 +1,325 @@
+{
+    "openapi": "3.0.2",
+    "info": {
+      "title": "Workers",
+      "version": "1.0.0",
+      "description": "Workers API"
+    },
+    "servers": [
+        {
+          "url": "http://localhost:8080",
+          "description": "Local server"
+        }
+      ],
+        "tags": [
+          {
+            "name": "CRUD operations"
+          }
+        ],
+        "paths": {
+            "/": {
+              "get": {
+                "tags": ["CRUD operations"],
+                "description": "Get workers",
+                "operationId": "getWorkers",
+                "responses": {
+                  "200": {
+                    "description": "Get all workers",
+                    "content": {
+                      "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {},
+                            "items": {}
+                            }
+                        }
+                      }
+                    }
+                  },
+                  "400": {
+                    "description": "Failed to get all workers",
+                    "content": {
+                      "application/json": {
+                        "example": {
+                          "message": "Failed to get all workers",
+                          "internal_code": "Failed to get all workers"
+                        }
+                      }
+                    }
+                  }
+                },
+                "post": {
+                    "tags": ["CRUD operations"],
+                    "description": "Create a new worker",
+                    "operationId": "postWorkers",
+                    "responses": {
+                      "201": {
+                        "description": "Created a new worker",
+                        "content": {
+                          "application/json": {
+                            "schema": {
+                              "$ref": "#/components/schemas/workers"
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "400": {
+                        "description": "Failed to create a new worker",
+                        "content": {
+                          "application/json": {
+                            "example": {
+                              "message": "Failed to create a new worker",
+                              "internal_code": "Failed to create a new worker"
+                            }
+                          }
+                        }
+                      }
+                    }
+              },
+              "/:id": {
+                "put": {
+                  "tags": ["CRUD operations"],
+                  "description": "Updates a worker",
+                  "operationId": "updateWorkers",
+                  "security": {
+                    "basicAuth": [],
+                    "bearerAuth": []
+                  },
+                  "responses": {
+                    "200": {
+                      "description": "Update a worker",
+                      "content": {
+                        "application/json": {
+                          "schema": {
+                            "$ref": "#/components/schemas/workers"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "400": {
+                      "description": "Failed to update a workers",
+                      "content": {
+                        "application/json": {
+                          "example": {
+                            "message": "Failed to update a workers",
+                            "internal_code": "Failed to update a workers"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "delete": {
+                      "tags": ["CRUD operations"],
+                      "description": "Delete a worker",
+                      "operationId": "deleteWorkers",
+                      "responses": {
+                        "200": {
+                          "description": "Deleted a worker",
+                          "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {},
+                                    "items": {}
+                                    }
+                              }
+                            }
+                          }
+                        },
+                        "400": {
+                          "description": "Failed to delete a worker",
+                          "content": {
+                            "application/json": {
+                              "example": {
+                                "message": "Failed to delete a worker",
+                                "internal_code": "Failed to delete a worker"
+                              }
+                            }
+                          }
+                        }
+                      }
+                },
+                "/logs": {
+                    "get": {
+                      "tags": ["CRUD operations"],
+                      "description": "Gets logs",
+                      "operationId": "getLogs",
+                      "responses": {
+                        "200": {
+                          "description": "Get logs",
+                          "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "eventName": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "string"
+                                        },
+                                        "ip": {
+                                            "type": "string"
+                                        },
+                                        "timestamp": {
+                                            "type": "string"
+                                        },
+                                        "user": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "items": {}
+                                    }
+                              }
+                            }
+                          }
+                        },
+                        "400": {
+                          "description": "Failed to get logs",
+                          "content": {
+                            "application/json": {
+                              "example": {
+                                "message": "Failed to get logs",
+                                "internal_code": "Failed to get logs"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "/login": {
+                        "post": {
+                          "tags": ["CRUD operations"],
+                          "description": "Login",
+                          "operationId": "login",
+                          "responses": {
+                            "200": {
+                              "description": "Login",
+                              "content": {
+                                "application/json": {
+                                  "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "user": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "items": {}
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            "400": {
+                              "description": "Failed to login",
+                              "content": {
+                                "application/json": {
+                                  "example": {
+                                    "message": "Failed to login",
+                                    "internal_code": "Failed to login"
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "/logout": {
+                            "post": {
+                              "tags": ["CRUD operations"],
+                              "description": "Logout",
+                              "operationId": "logout",
+                              "responses": {
+                                "200": {
+                                  "description": "Logout",
+                                  "content": {
+                                    "application/json": {
+                                      "schema": {
+                                        "type": "object",
+                                        "items": {}
+                                        }
+                                      }
+                                    }
+                                  }
+                                },
+                                "400": {
+                                  "description": "Failed to logout",
+                                  "content": {
+                                    "application/json": {
+                                      "example": {
+                                        "message": "Failed to logout",
+                                        "internal_code": "Failed to logout"
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+            },
+          "components": {
+            "schemas": {
+              "workers": {
+                "title": "Workers",
+                "description": "Consists of all workers",
+                "type": "object",
+                "properties": {
+                  "workers": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer"
+                      },
+                      "employee_name": {
+                        "type": "string"
+                      },
+                      "employee_salary": {
+                        "type": "integer"
+                      },
+                      "employee_age": {
+                        "type": "integer"
+                      },
+                      "profile_image": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "employee_name": "John",
+                  "employee_salary": 54768,
+                  "employee_age": 43,
+                  "profile_image": ""
+                }
+              }, 
+              "users": {
+                "title": "Users",
+                "description": "Consists of all users",
+                "type": "object",
+                "properties": {
+                  "users": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer"
+                      },
+                      "username": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "id": 1,
+                  "username": "John"
+                }
+              }
+            },
+            "securitySchemes": {
+              "auth": {
+                "type": "http",
+                "scheme": "bearer"
+              }
+            }
+          }
+}
