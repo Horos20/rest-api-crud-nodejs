@@ -64,16 +64,16 @@ app.post("/login", async (req, res) => {
       if (result.rows.length > 0) {
         const token = jwt.sign({id: result.rows[0].id, user: result.rows[0].username}, "1234");
         res.cookie("authToken", token, {httpOnly: true});
-        res.send({data: result.rows, status: "success", message: "Successfully! User has been logged in."});
+        res.send({data: result.rows, user: req.body.user, status: "success", message: "Successfully! User has been logged in."});
       } else {
-        res.send({data: [], status: "error", message: "Invalid user"});
+        res.send({data: [], user: req.body.user, status: "error", message: "Invalid user"});
       }
     });
 });
 
 app.post("/logout", (req, res) => {
     res.clearCookie("authToken", {expires: new Date(0)});
-    res.send({message: "Logged out successfully"});
+    res.send({message: "Logged out successfully", user: null});
 });
   
 
