@@ -21,5 +21,6 @@ model workers {
   employee_salary Int
   employee_age Int
   profile_image String
+  owner_id  Int?
 }
 

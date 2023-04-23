@@ -24,6 +24,7 @@ async function main() {
       employee_salary: 45000,
       employee_age: 20,
       profile_image: "",
+      owner_id: null
     },
   });
   const workers2 = await prisma.workers.upsert({
@@ -34,6 +35,7 @@ async function main() {
       employee_salary: 52000,
       employee_age: 29,
       profile_image: "",
+      owner_id: null
     },
   });
   const workers3 = await prisma.workers.upsert({
@@ -44,6 +46,7 @@ async function main() {
       employee_salary: 37000,
       employee_age: 23,
       profile_image: "",
+      owner_id: null
     },
   });
 }

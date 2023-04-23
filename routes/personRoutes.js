@@ -6,15 +6,23 @@ const readline = require("readline");
  
 const client = require("../db_connection");
 
-const isLoggedIn = (req, res, next) => {
+const isLoggedIn = async (req, res, next) => {
     const authToken = req.cookies.authToken;
-    if (!authToken) {
-      return res.status(401).send({error: "Unauthorized"});
-    }
   
     // Verify the authenticity of the token
     try {
+      if (!authToken) {
+        throw new Error("Unauthorized");
+      }
       const user = jwt.verify(authToken, "1234");
+
+      const sql = `SELECT * FROM workers WHERE id = $1 and owner_id = $2 or id = $1 and owner_id is null`;
+      const params = [req.params.id, user.id];
+      const result = await client.query(sql, params);
+        if (result.rows.length < 1) {
+          return res.status(401).send({error: "Unauthorized"});
+        }
+
       req.user = user;
       next();
     } catch (error) {
@@ -58,15 +66,15 @@ function log(eventName, extraData) {
 
 app.post("/login", async (req, res) => {
     const sql = "SELECT * FROM users WHERE username = $1";
-    const values = [req.body.user];
+    const values = [req.body.name];
     client.query(sql, values, function (err, result) {
       if (err) throw err;
       if (result.rows.length > 0) {
         const token = jwt.sign({id: result.rows[0].id, user: result.rows[0].username}, "1234");
         res.cookie("authToken", token, {httpOnly: true});
-        res.send({data: result.rows, user: req.body.user, status: "success", message: "Successfully! User has been logged in."});
+        res.send({data: result.rows, user: {name: req.body.name, user_id: req.body.user_id}, status: "success", message: "Successfully! User has been logged in."});
       } else {
-        res.send({data: [], user: req.body.user, status: "error", message: "Invalid user"});
+        res.send({data: [], user: {name: null}, status: "error", message: "Invalid user"});
       }
     });
 });
@@ -86,8 +94,8 @@ app.get("/", async (req, res) => {
 });
 
 app.post("/", async (req, res) => {
-    const sql = `INSERT INTO workers (employee_name, employee_salary, employee_age, profile_image) VALUES ($1, $2, $3, $4) RETURNING *`;
-    const values = [req.body.employee_name, req.body.employee_salary, req.body.employee_age, ""];
+    const sql = `INSERT INTO workers (employee_name, employee_salary, employee_age, profile_image, owner_id) VALUES ($1, $2, $3, $4, $5) RETURNING *`;
+    const values = [req.body.employee_name, req.body.employee_salary, req.body.employee_age, "", req.body.owner_id.user_id];
     client.query(sql, values, function (err, result) {
     if (err) throw err;
     res.status(201).send({data: result.rows, status: "success", message: "Successfully! Record has been added."});
