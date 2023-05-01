@@ -72,7 +72,7 @@ app.post("/login", async (req, res) => {
       if (result.rows.length > 0) {
         const token = jwt.sign({id: result.rows[0].id, user: result.rows[0].username}, "1234");
         res.cookie("authToken", token, {httpOnly: true});
-        res.send({data: result.rows, user: {name: req.body.name, user_id: req.body.user_id}, status: "success", message: "Successfully! User has been logged in."});
+        res.send({data: result.rows, token: token, user: {name: req.body.name, user_id: req.body.user_id}, status: "success", message: "Successfully! User has been logged in."});
       } else {
         res.send({data: [], user: {name: null}, status: "error", message: "Invalid user"});
       }
@@ -96,10 +96,13 @@ app.get("/", async (req, res) => {
 app.post("/", async (req, res) => {
     const sql = `INSERT INTO workers (employee_name, employee_salary, employee_age, profile_image, owner_id) VALUES ($1, $2, $3, $4, $5) RETURNING *`;
     const values = [req.body.employee_name, req.body.employee_salary, req.body.employee_age, "", req.body.owner_id.user_id];
-    client.query(sql, values, function (err, result) {
-    if (err) throw err;
+    let result;
+    try {
+      result = await client.query(sql, values)
+    } catch (err) {
+      res.status(400).send({error: "Bad request"})
+    }
     res.status(201).send({data: result.rows, status: "success", message: "Successfully! Record has been added."});
-    });
 });
 
 app.put("/:id", isLoggedIn, async (req, res) => {
