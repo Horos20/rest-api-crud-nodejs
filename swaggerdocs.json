@@ -207,19 +207,19 @@
                 }
               }
             }
-          }
-        },
-        "400": {
-          "description": "Failed to update a workers",
-          "content": {
-            "application/json": {
-              "example": {
-                "message": "Failed to update a workers",
-                "internal_code": "Failed to update a workers"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Unauthorized"
+                }
               }
             }
           }
         },
+        
         "summary": "Update a worker"
       },
       "delete": {
